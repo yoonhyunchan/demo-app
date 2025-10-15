@@ -51,7 +51,7 @@ export const App: React.FC = () => {
     }
   }
 
-  async function toggleTodo(todo: Todo) {
+async function toggleTodo(todo: Todo) {
     setError(null)
     try {
       const res = await fetch(`${baseUrl}/api/todos/${todo.id}`, {
@@ -61,7 +61,7 @@ export const App: React.FC = () => {
       })
       if (!res.ok) throw new Error('Failed to update todo')
       const updated: Todo = await res.json()
-      setTodos(prev => prev.map(t => (t.id === updated.id ? updated : t)))
+
     } catch (e: any) {
       setError(e.message || 'Unknown error')
     }
@@ -83,31 +83,33 @@ export const App: React.FC = () => {
   }, [])
 
   return (
-    <div style={{ maxWidth: 560, margin: '40px auto', padding: 16, fontFamily: 'system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial' }}>
-      <h1>Todo List</h1>
-      <form onSubmit={addTodo} style={{ display: 'flex', gap: 8 }}>
-        <input
-          value={title}
-          onChange={e => setTitle(e.target.value)}
-          placeholder="Add a task"
-          style={{ flex: 1, padding: 10, fontSize: 16 }}
-        />
-        <button type="submit" style={{ padding: '10px 14px' }}>Add</button>
-      </form>
-      {error && <div style={{ color: 'crimson', marginTop: 8 }}>{error}</div>}
-      {loading ? (
-        <div style={{ marginTop: 16 }}>Loading…</div>
-      ) : (
-        <ul style={{ listStyle: 'none', padding: 0, marginTop: 16 }}>
-          {todos.map(t => (
-            <li key={t.id} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 0', borderBottom: '1px solid #eee' }}>
-              <input type="checkbox" checked={t.completed} onChange={() => toggleTodo(t)} />
-              <span style={{ textDecoration: t.completed ? 'line-through' : 'none', flex: 1 }}>{t.title}</span>
-              <button onClick={() => deleteTodo(t.id)} style={{ padding: '6px 10px' }}>Delete</button>
-            </li>
-          ))}
-        </ul>
-      )}
+    <div className="container">
+      <div className="card">
+        <h1 className="title">Todo List</h1>
+        <form onSubmit={addTodo} className="form">
+          <input
+            value={title}
+            onChange={e => setTitle(e.target.value)}
+            placeholder="Add a task"
+            className="input"
+          />
+          <button type="submit" className="btn-primary">Add</button>
+        </form>
+        {error && <div className="error">{error}</div>}
+        {loading ? (
+          <div style={{ marginTop: 16 }}>Loading…</div>
+        ) : (
+          <ul className="list">
+            {todos.map(t => (
+              <li key={t.id} className="item">
+                <input type="checkbox" checked={t.completed} onChange={() => toggleTodo(t)} />
+                <span className="todo-title" style={{ textDecoration: t.completed ? 'line-through' : 'none', opacity: t.completed ? 0.7 : 1 }}>{t.title}</span>
+                <button onClick={() => deleteTodo(t.id)} className="btn-ghost">Delete</button>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
     </div>
   )
 }

@@ -13,7 +13,7 @@
    ```bash
    cp backend/.env.example backend/.env
    ```
-3. Install backend dependencies and run:
+3. Install backend dependencies and run (Flask dev server):
    ```bash
    cd backend
    python3 -m venv .venv
@@ -22,6 +22,21 @@
    # Run the server (default http://localhost:5000)
    flask --app app run --debug
    ```
+
+#### Alternative: Run Flask via uvicorn (ASGI)
+- This repo includes an ASGI wrapper so you can serve Flask with uvicorn.
+- Useful for production-like reloader and server features.
+```bash
+cd backend
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+# Run on http://localhost:8000
+uvicorn asgi:application --host 0.0.0.0 --port 8000 --reload
+```
+
+- Configure CORS origins via `backend/.env`:
+  - `CORS_ORIGINS=http://localhost:5173` (comma-separated for multiple origins)
 
 ### Frontend (Vite + React)
 1. Install dependencies and run dev server:
@@ -33,11 +48,12 @@
    npm run dev
    ```
    - Open the app: http://localhost:5173
-   - Ensure the backend is running on http://localhost:5000 or set `VITE_API_URL`.
+   - Ensure the backend is running on http://localhost:5000 (Flask) or http://localhost:8000 (uvicorn) or set `VITE_API_URL`.
 
 ### Environment Variables
 - Backend (`backend/.env`):
   - `DATABASE_URL=postgresql+psycopg2://todo_user:password@localhost:5432/todo_db`
+  - `CORS_ORIGINS=http://localhost:5173`
   - `FLASK_ENV=development` (optional)
   - `FLASK_DEBUG=1` (optional)
 - Frontend (`frontend/.env`):
@@ -51,6 +67,6 @@
 
 ### Notes
 - The backend will auto-create tables on startup.
-- CORS is enabled for development (`http://localhost:5173`).
+- CORS is enabled and configurable via env (default allows `http://localhost:5173`).
 
 
